@@ -6,7 +6,12 @@ test.describe('Functionality Validation', () => {
     let basePage: Base
 
     test.beforeEach(async ({ page }) => {
-        await page.goto('http://mapleqa.com:8070/js22/?randomParam=10')
+
+        const site = 'staging'     
+        site === 'staging' 
+        ? await page.goto('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=10') // staging 
+        : await page.goto('http://mapleqa.com:8070/js22/?randomParam=10') // live site 
+                                                                        
         basePage = new Base(page)
     })
 
@@ -82,6 +87,27 @@ test.describe('Functionality Validation', () => {
                 : await expect(page.locator('#messageArea')).toContainText('My number is smaller')
         }
         // await page.waitForTimeout(10)
+    })
+
+
+    test.only('API getUsersList', async ({ request }) => {
+        const getUsersList = await request.get("https://gorest.co.in/public/v2/users",
+            {
+                headers: {
+                    'Accept': '*/*',
+                    'Authorization': `Bearer b2b30c9695d885f4e8a777bc6e07ff079952706d187b00ff12557da42e47ff8b`
+                }
+            }
+        )
+
+        expect(getUsersList.status()).toEqual(200)
+        // debugging
+        console.log(getUsersList.status())
+        console.log(await getUsersList.json())
+        console.log((await getUsersList.json())[1])
+
+        console.log((await getUsersList.json()).length)
+
     })
 
 })
