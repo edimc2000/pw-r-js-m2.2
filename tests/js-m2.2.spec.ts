@@ -8,8 +8,8 @@ test.describe('Functionality Validation', () => {
 
     test.beforeEach(async ({ page }) => {
 
-        const site = 'stagingx'
-        site === 'live'
+        const site = 'staging'
+        site === 'staging'
             ? await page.goto('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=10') // staging 
             : await page.goto('http://mapleqa.com:8070/js22/?randomParam=10') // live site 
 
@@ -108,10 +108,13 @@ test.describe('Functionality Validation', () => {
                 ? await expect(page.locator('#messageArea')).toContainText('Congratulations')
                 : await expect(page.locator('#messageArea')).toContainText('My number is larger')
         }
-        // await page.waitForTimeout(10)
+        await page.waitForTimeout(10)
     })
+ 
+ 
 
-    test('[HW-R-888-003] Validate max attempts - lose', async ({ page }) => {
+
+    test('[HW-R-888-003] Validate max attempts - lose - click reset', async ({ page }) => {
         for (let i = 11; i <= 20; i++) {
             await page.locator('#guessField').fill(`${i}`)
             await page.locator('#guessButton button').click()
@@ -120,10 +123,40 @@ test.describe('Functionality Validation', () => {
                 ? await expect(page.locator('#messageArea')).toContainText('Game Over')
                 : await expect(page.locator('#messageArea')).toContainText('My number is smaller')
         }
+
+        await basePage.getButtonReset.click()
+        await expect(basePageId.getIdTextShowAttempts).toBeEmpty()
+        await page.waitForTimeout(10)
+    })
+    
+    test('[HW-R-888-004] Validate max attempts - lose - pressing enter for reset and guessfield', async ({ page }) => {
+        for (let i = 11; i <= 20; i++) {
+            await page.locator('#guessField').fill(`${i}`)
+            await page.locator('#guessField').press('Enter')
+            // await page.locator('#guessButton button').click()
+            // console.log (i)
+            i === 20
+                ? await expect(page.locator('#messageArea')).toContainText('Game Over')
+                : await expect(page.locator('#messageArea')).toContainText('My number is smaller')
+        }
+
+        await basePage.getButtonReset.press('Enter')
+        await expect(basePageId.getIdTextShowAttempts).toBeEmpty()
         await page.waitForTimeout(10)
     })
 
-
+    test('[HW-R-888-002] Validate max attempts - win pressing enter for reset and guessfield', async ({ page }) => {
+        for (let i = 1; i <= 10; i++) {
+            await page.locator('#guessField').fill(`${i}`)
+            await page.locator('#guessField').press('Enter')
+            i === 10
+                ? await expect(page.locator('#messageArea')).toContainText('Congratulations')
+                : await expect(page.locator('#messageArea')).toContainText('My number is larger')
+        }
+        await basePage.getButtonReset.press('Enter')
+        await expect(basePageId.getIdTextShowAttempts).toBeEmpty()
+        // await page.waitForTimeout(10)
+    })
 
     // testing API  *** 
     test.skip('API getUsersList', async ({ request }) => {
