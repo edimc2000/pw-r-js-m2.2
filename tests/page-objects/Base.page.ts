@@ -8,16 +8,66 @@ export default class Base {
     getFrontCardTitle: Locator
     getFrontCardValue: Locator
     getTextMiscTitle: Locator
-    getTextAttempts: Locator
+    getTextAttemptsTitle: Locator
+    getTextMessageArea: Locator
+    getTextGuesses: Locator
+    getTextShowAttempts: Locator
+    getCardTitle: Locator
+    getCardValue: Locator
+
+    idLocators: {
+        getIdFieldGuess: Locator
+        getIdButtonGuess: Locator
+        getIdTextMessageArea: Locator
+        getIdFrontCardTitle: Locator
+        getIdFrontCardValue: Locator
+        getIdTextMiscTitle: Locator
+        getIdTextGuesses: Locator
+        getIdTextAttemptsTitle: Locator
+        getIdTextShowAttempts: Locator
+        getIdCardTitle: Locator
+        getIdCardValue: Locator
+    }
 
     constructor(page: Page) {
         this.page = page
-        this.getFieldGuess = page.locator('#guessField')
-        this.getButtonGuess = page.locator('button')
-        this.getFrontCardTitle = page.locator('#frontCardTitle')
-        this.getFrontCardValue = page.locator('#frontCardValue')
-        this.getTextMiscTitle  = page.locator('.miscTitle')
-        this.getTextAttempts = page.locator('#attempts')
+
+        this.getFieldGuess = this.page.locator('#guessField')
+        this.getButtonGuess = this.page.locator('button')
+        this.getTextMessageArea = this.page.locator('#messageArea')
+
+        this.getFrontCardTitle = this.page.locator('#frontCardTitle')
+        this.getFrontCardValue = this.page.locator('#frontCardValue')
+
+        this.getTextMiscTitle = this.page.locator('.miscTitle')
+        this.getTextGuesses = this.page.locator('#guesses')
+
+        this.getTextAttemptsTitle = this.page.locator('#attemptsTitle')
+        this.getTextShowAttempts = this.page.locator('#showAttempts')
+
+        this.getCardTitle = this.page.locator("#cardTitle")
+        this.getCardValue = this.page.locator('#cardValue')
+
+
+        this.idLocators = {
+            getIdFieldGuess: this.page.getByTestId('guessField'),
+            getIdButtonGuess: this.page.getByTestId('guessButton'),
+            getIdTextMessageArea: this.page.getByTestId('messageArea'),
+
+            getIdFrontCardTitle: this.page.getByTestId('frontCardTitle'),
+            getIdFrontCardValue: this.page.getByTestId('frontCardValue'),
+
+            getIdTextMiscTitle: this.page.getByTestId('miscTitle'),
+            getIdTextGuesses: this.page.getByTestId('guesses'),
+
+            getIdTextAttemptsTitle: this.page.getByTestId('attemptsTitle'),
+            getIdTextShowAttempts: this.page.getByTestId('showAttempts'),
+
+            getIdCardTitle: this.page.getByTestId("cardTitle"),
+            getIdCardValue: this.page.getByTestId('cardValue')
+
+        }
+
 
     }
 
