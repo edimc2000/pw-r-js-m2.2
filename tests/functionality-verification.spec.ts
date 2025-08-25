@@ -94,7 +94,15 @@ test.describe('Functionality Verification', () => {
     })
 
 
-    
+    test('*TS888-006: Validate Input Boundary (Lower): Number 1', async ({ page }) => {
+        let guessInput: string = '1'
+
+        await locatorsId.getIdFieldGuess.fill(guessInput)
+        await locatorsId.getIdButtonGuess.click()
+        await expect(basePage.getCardGuesses).toContainText(guessInput)
+        await expect(locatorsId.getIdTextShowAttempts).toHaveText("1 / 10")
+    })
+
 
     test('TS888-016: Verify Sequential Guesses with Mixed Feedback', async ({ page }) => {
         let guessInput: string[] = ['5', '20', '12']
@@ -107,11 +115,11 @@ test.describe('Functionality Verification', () => {
         await locatorsId.getIdButtonGuess.click()
 
         await expect(locatorsId.getIdTextMessageArea).toHaveText('My number is smaller.\n Try Again!')
-          
+
         await locatorsId.getIdFieldGuess.fill(guessInput[2])
         await locatorsId.getIdButtonGuess.click()
         await expect(locatorsId.getIdTextMessageArea).toHaveText('Congratulations! You guessed the number!')
-        
+
         await expect(basePage.getCardGuesses).toContainText(guessInput.join(''))
         await expect(locatorsId.getIdTextShowAttempts).toHaveText(`${guessInput.length} / 10`)
 
