@@ -93,4 +93,32 @@ test.describe('Functionality Verification', () => {
         await basePage.waitASec(0.005)
     })
 
+
+    
+
+    test('TS888-016: Verify Sequential Guesses with Mixed Feedback', async ({ page }) => {
+        let guessInput: string[] = ['5', '20', '12']
+
+        await locatorsId.getIdFieldGuess.fill(guessInput[0])
+        await locatorsId.getIdButtonGuess.click()
+        await expect(locatorsId.getIdTextMessageArea).toHaveText('My number is larger.\n Try Again!')
+
+        await locatorsId.getIdFieldGuess.fill(guessInput[1])
+        await locatorsId.getIdButtonGuess.click()
+
+        await expect(locatorsId.getIdTextMessageArea).toHaveText('My number is smaller.\n Try Again!')
+          
+        await locatorsId.getIdFieldGuess.fill(guessInput[2])
+        await locatorsId.getIdButtonGuess.click()
+        await expect(locatorsId.getIdTextMessageArea).toHaveText('Congratulations! You guessed the number!')
+        
+        await expect(basePage.getCardGuesses).toContainText(guessInput.join(''))
+        await expect(locatorsId.getIdTextShowAttempts).toHaveText(`${guessInput.length} / 10`)
+
+        await expect(locatorsId.getIdFieldGuess).toBeEmpty()
+        await expect(locatorsId.getIdFieldGuess).not.toBeFocused()
+        await expect(locatorsId.getIdFieldGuess).not.toBeEnabled()
+
+
+    })
 })
