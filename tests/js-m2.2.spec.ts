@@ -1,3 +1,4 @@
+
 import { test, expect } from '@playwright/test'
 import Base from './page-objects/base.page'
 
@@ -5,11 +6,12 @@ test.describe('Functionality Validation', () => {
 
     let basePage: Base
     let basePageId: typeof basePage.idLocators
+    let staging: boolean
 
     test.beforeEach(async ({ page }) => {
 
-        const site = 'staging'
-        site === 'staging'
+        staging = true
+        staging === true
             ? await page.goto('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=10') // staging 
             : await page.goto('http://mapleqa.com:8070/js22/?randomParam=10') // live site 
 
@@ -18,18 +20,32 @@ test.describe('Functionality Validation', () => {
     })
 
     test('[HW-R-888-001-1a] Validate page elements - using CSS locators (demo)', async ({ page }) => {
-        await expect(basePage.getFrontCardTitle).toHaveAttribute('data-testid', 'frontCardTitle')
+
+
+        // DOM Title and URL --------------------------------------
+        expect(await page.title(), 'Validate the Title of the page ').toContain('m2.2') // with message string on the assertion that reflects on the report as well
+        staging === true
+            ? expect(page.url(), 'Validate the URL').toContain('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=10')
+            : expect(page.url(), 'Validate the URL').toContain('http://mapleqa.com:8070/js22/?randomParam=10')
+
+        // First Card --------------------------------------
+        await expect(basePage.getFrontCardTitle).toHaveAttribute('data-testid', 'frontCardTitle') // miscellaneous test 
         expect(await basePage.getFrontCardTitle.innerText()).toContain('GUESS')
         expect(await basePage.getFrontCardTitle.innerText()).toBe('Guess the card value'.toUpperCase())
 
         await expect(basePage.getFrontCardValue).toHaveText('**')
         await expect(basePage.getFrontCardValue).not.toBeHidden()
 
-        await expect(basePage.getCardTitle).toHaveText('')
-        await expect(basePage.getCardValue).toBeEmpty()
+        // First Card but the back side -------------------------------------- 
+        await expect(basePage.getCardTitle).toHaveText('')  // one way to 
+        await expect(basePage.getCardTitle).toHaveText('')  // one way to 
+        await expect(basePage.getCardValue).toBeEmpty() // another way 
+        expect(await basePage.getCardValue.innerText()).toBe('') // not waiting - other way 
 
         await expect(basePage.getFieldGuess).toBeEnabled()
+        await expect(basePage.getFieldGuess).toBeEditable()
         await expect(basePage.getFieldGuess).toBeVisible()
+        await expect(basePage.getFieldGuess).toBeFocused() // upon loading the page the guessField should be focused and ready to take the user's input
 
         await expect(basePage.getButtonGuess).toBeDisabled()
         await expect(basePage.getButtonGuess).toHaveText('GUESS')
@@ -42,7 +58,20 @@ test.describe('Functionality Validation', () => {
         await expect(basePage.getTextAttemptsTitle).toHaveText('ATTEMPTS')
         await expect(basePage.getTextShowAttempts).toBeEmpty()
 
-        await page.waitForTimeout(10)
+
+        // fill 20, click guess button and focus on field
+        await basePage.getFieldGuess.fill('20')
+        await expect(basePage.getButtonGuess).toBeEnabled  // alternatively it can be asserted as .not.toBeDisabed 
+        await expect(basePage.getButtonGuess).not.toBeDisabled
+        await basePage.getButtonGuess.click()
+        await expect(basePage.getFieldGuess).toBeFocused()
+
+        // fill 30, press enter and focus on field
+        await basePage.getFieldGuess.fill('20')
+        await basePage.getFieldGuess.press('Enter')
+        await expect(basePage.getFieldGuess).toBeFocused()
+
+        // await page.waitForTimeout(10)
     })
 
     test('[HW-R-888-001-1a] Validate page elements - using data-testid POM (demo)', async ({ page }) => {
@@ -96,8 +125,9 @@ test.describe('Functionality Validation', () => {
         await page.locator('#guessField').fill('10')
         await page.locator('#guessButton button').click()
         await expect.soft(page.locator('#messageArea')).toContainText('Congratulations')
+        await expect(basePageId.getIdTextShowAttempts).toHaveText('3 / 10')
 
-        await page.waitForTimeout(10)
+        // await page.waitForTimeout(10)
     })
 
     test('[HW-R-888-002] Validate max attempts - win', async ({ page }) => {
@@ -108,10 +138,11 @@ test.describe('Functionality Validation', () => {
                 ? await expect(page.locator('#messageArea')).toContainText('Congratulations')
                 : await expect(page.locator('#messageArea')).toContainText('My number is larger')
         }
-        await page.waitForTimeout(10)
+        await expect(basePage.getContainerCard).toContainClass('flipped') // ensures that the animation is added when flipping card
+        // await page.waitForTimeout(10)
     })
- 
- 
+
+
 
 
     test('[HW-R-888-003] Validate max attempts - lose - click reset', async ({ page }) => {
@@ -123,12 +154,13 @@ test.describe('Functionality Validation', () => {
                 ? await expect(page.locator('#messageArea')).toContainText('Game Over')
                 : await expect(page.locator('#messageArea')).toContainText('My number is smaller')
         }
-
+        await expect(basePage.getContainerCard).toContainClass('flipped') // ensures that the animation is added when flipping card
+        await expect(basePageId.getIdTextShowAttempts).toHaveText('10 / 10')
         await basePage.getButtonReset.click()
         await expect(basePageId.getIdTextShowAttempts).toBeEmpty()
-        await page.waitForTimeout(10)
+        // await page.waitForTimeout(10)
     })
-    
+
     test('[HW-R-888-004] Validate max attempts - lose - pressing enter for reset and guessfield', async ({ page }) => {
         for (let i = 11; i <= 20; i++) {
             await page.locator('#guessField').fill(`${i}`)
@@ -140,9 +172,13 @@ test.describe('Functionality Validation', () => {
                 : await expect(page.locator('#messageArea')).toContainText('My number is smaller')
         }
 
+        await expect(basePageId.getIdCardValue).not.toBeEmpty()
+        await expect(basePageId.getIdCardTitle).toHaveText('The number is')
+        await expect(basePage.getContainerCard).toContainClass('flipped') // ensures that the animation is added when flipping card
+        await expect(basePageId.getIdTextShowAttempts).toHaveText('10 / 10')
         await basePage.getButtonReset.press('Enter')
         await expect(basePageId.getIdTextShowAttempts).toBeEmpty()
-        await page.waitForTimeout(10)
+        // await page.waitForTimeout(10)
     })
 
     test('[HW-R-888-002] Validate max attempts - win pressing enter for reset and guessfield', async ({ page }) => {
@@ -153,10 +189,16 @@ test.describe('Functionality Validation', () => {
                 ? await expect(page.locator('#messageArea')).toContainText('Congratulations')
                 : await expect(page.locator('#messageArea')).toContainText('My number is larger')
         }
+        await expect(basePageId.getIdCardValue).not.toBeEmpty()
+        await expect(basePageId.getIdCardTitle).toHaveText('The number is')
+        await expect(basePage.getContainerCard).toContainClass('flipped') // ensures that the animation is added when flipping card
         await basePage.getButtonReset.press('Enter')
         await expect(basePageId.getIdTextShowAttempts).toBeEmpty()
-        // await page.waitForTimeout(10)
+        await page.waitForTimeout(10)
     })
+
+
+
 
     // testing API  *** 
     test.skip('API getUsersList', async ({ request }) => {

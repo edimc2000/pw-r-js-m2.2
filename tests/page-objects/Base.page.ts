@@ -15,6 +15,7 @@ export default class Base {
     getCardTitle: Locator
     getCardValue: Locator
     getButtonReset: Locator
+    getContainerCard: Locator
 
     idLocators: {
         getIdFieldGuess: Locator
@@ -29,6 +30,7 @@ export default class Base {
         getIdCardTitle: Locator
         getIdCardValue: Locator
         getIdButtonReset: Locator
+        
     }
 
     constructor(page: Page) {
@@ -50,6 +52,7 @@ export default class Base {
         this.getCardTitle = this.page.locator("#cardTitle")
         this.getCardValue = this.page.locator('#cardValue')
         this.getButtonReset = this.page.locator('#reset')
+        this.getContainerCard = this.page.locator('#card')
 
 
         this.idLocators = {
