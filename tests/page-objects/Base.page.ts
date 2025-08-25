@@ -16,7 +16,9 @@ export default class Base {
     getCardValue: Locator
     getButtonReset: Locator
     getContainerCard: Locator
-
+    getFirstCardGuessed: Locator
+    getCardGuesses: Locator
+    
     idLocators: {
         getIdFieldGuess: Locator
         getIdButtonGuess: Locator
@@ -29,8 +31,8 @@ export default class Base {
         getIdTextShowAttempts: Locator
         getIdCardTitle: Locator
         getIdCardValue: Locator
-        getIdButtonReset: Locator
-        
+
+        getIdContainerFirstCard: Locator
     }
 
     constructor(page: Page) {
@@ -54,7 +56,9 @@ export default class Base {
         this.getButtonReset = this.page.locator('#reset')
         this.getContainerCard = this.page.locator('#card')
 
-
+        this.getFirstCardGuessed = this.page.locator('#guesses>span:first-child')
+        this.getCardGuesses = this.page.locator('#guesses')
+        
         this.idLocators = {
             getIdFieldGuess: this.page.getByTestId('guessField'),
             getIdButtonGuess: this.page.getByTestId('guessButton'),
@@ -72,12 +76,18 @@ export default class Base {
             getIdCardTitle: this.page.getByTestId("cardTitle"),
             getIdCardValue: this.page.getByTestId('cardValue'),
 
-            getIdButtonReset: this.page.getByTestId('reset')
-
+            getIdContainerFirstCard: this.page.locator('#card')
         }
-
-
     }
 
+    // async XwaitASec(second: number) {
+    //     await this.page.waitForTimeout(second * 1000);
+    // }
+
+       waitASec = async (second: number) => await this.page.waitForTimeout(second * 1000)
+  
+    //   async wait(ms: number) {
+    //     await this.page.waitForTimeout(ms);
+    //   }
 
 }
