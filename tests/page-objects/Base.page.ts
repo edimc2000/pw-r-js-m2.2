@@ -18,7 +18,8 @@ export default class Base {
     getContainerCard: Locator
     getFirstCardGuessed: Locator
     getCardGuesses: Locator
-    
+    getTextAttemptCounter: Locator
+
     idLocators: {
         getIdFieldGuess: Locator
         getIdButtonGuess: Locator
@@ -58,7 +59,9 @@ export default class Base {
 
         this.getFirstCardGuessed = this.page.locator('#guesses>span:first-child')
         this.getCardGuesses = this.page.locator('#guesses')
-        
+
+        this.getTextAttemptCounter = this.page.locator('div .rotateAttempt')
+
         this.idLocators = {
             getIdFieldGuess: this.page.getByTestId('guessField'),
             getIdButtonGuess: this.page.getByTestId('guessButton'),
@@ -77,6 +80,7 @@ export default class Base {
             getIdCardValue: this.page.getByTestId('cardValue'),
 
             getIdContainerFirstCard: this.page.locator('#card')
+
         }
     }
 
@@ -84,8 +88,8 @@ export default class Base {
     //     await this.page.waitForTimeout(second * 1000);
     // }
 
-       waitASec = async (second: number) => await this.page.waitForTimeout(second * 1000)
-  
+    waitASec = async (second: number) => await this.page.waitForTimeout(second * 1000)
+
     //   async wait(ms: number) {
     //     await this.page.waitForTimeout(ms);
     //   }
