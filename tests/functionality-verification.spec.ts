@@ -234,8 +234,6 @@ test.describe('Functionality Verification', () => {
         // await basePage.waitASec(10)
     })
 
-
-
     test('TS888-016: Verify Sequential Guesses with Mixed Feedback', async ({ page }) => {
         let guessInput: string[][] = [
             ['5', '20', '12'],
@@ -269,7 +267,65 @@ test.describe('Functionality Verification', () => {
         await expect(locatorsId.getIdFieldGuess).not.toBeFocused()
         await expect(locatorsId.getIdFieldGuess).not.toBeEnabled()
 
-        await basePage.waitASec(0.5)
+        // await basePage.waitASec(0.5)
+    })
+
+    test('TS888-017: Verify Input via Keyboard "Enter" Key', async ({ page }) => {
+        let guessInput = '5'
+        await locatorsId.getIdFieldGuess.fill(guessInput)
+        await locatorsId.getIdFieldGuess.press('Enter')
+
+        await expect(locatorsId.getIdTextMessageArea).toHaveText('My number is larger.\n Try Again!')
+        await expect(basePage.getFirstCardGuessed).toContainText(guessInput)
+        await expect(locatorsId.getIdTextShowAttempts).toHaveText('1 / 10')
+
+        await expect(locatorsId.getIdFieldGuess).toBeEmpty()
+        await expect(locatorsId.getIdFieldGuess).toBeFocused()
 
     })
+
+
+    test('TS888-018: Verify Previous Guesses Styling and Order', async ({ page }) => {
+        let guessInput: string[] = ['5', '20', '12']
+
+        for (let index = 0; index < guessInput.length; index++) {
+            await locatorsId.getIdFieldGuess.fill(guessInput[index])
+            await locatorsId.getIdFieldGuess.press('Enter')
+        }
+
+        for (let index = 0; index < guessInput.length; index++) {
+            index === guessInput.length - 1
+                ? await expect(basePage.getCardGuessesIndividual.nth(index)).toContainClass('boxed guessed')
+                : await expect(basePage.getCardGuessesIndividual.nth(index)).toContainClass('boxed')
+        }
+        await expect(locatorsId.getIdTextGuesses).toHaveText(guessInput.join(''))
+
+
+    })
+
+
+
+    test('TS888-019: Verify Mixed Out-of-Range and Valid Attempts Count', async ({ page }) => {
+        let guessInput: string[][] =
+            [
+                ["0", "60", "5", "30", "12"],
+                ["0", "0", "1", "2", "3"],
+                [
+                    'ERROR:Input should be between 1 & 50',
+                    'ERROR:Input should be between 1 & 50',
+                    'My number is larger.\n Try Again!',
+                    'My number is smaller.\n Try Again!',
+                    'Congratulations! You guessed the number!'
+                ]
+            ]
+
+        for (let index = 0; index < guessInput[0].length; index++) {
+            await locatorsId.getIdFieldGuess.fill(`${guessInput[0][index]}`)
+            await locatorsId.getIdButtonGuess.click()
+            await expect(basePage.getTextAttemptCounter).toHaveText(`${guessInput[1][index]}`)
+            await expect(locatorsId.getIdTextMessageArea).toHaveText(`${guessInput[2][index]}`)
+        }
+
+    })
+
 })

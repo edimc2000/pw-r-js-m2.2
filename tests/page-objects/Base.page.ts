@@ -19,6 +19,7 @@ export default class Base {
     getFirstCardGuessed: Locator
     getCardGuesses: Locator
     getTextAttemptCounter: Locator
+    getCardGuessesIndividual: Locator
 
     idLocators: {
         getIdFieldGuess: Locator
@@ -59,6 +60,7 @@ export default class Base {
 
         this.getFirstCardGuessed = this.page.locator('#guesses>span:first-child')
         this.getCardGuesses = this.page.locator('#guesses')
+        this.getCardGuessesIndividual = this.page.locator('#guesses span')
 
         this.getTextAttemptCounter = this.page.locator('div .rotateAttempt')
 
