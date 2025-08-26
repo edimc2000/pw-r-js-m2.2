@@ -6,7 +6,8 @@ test.describe('Functionality Verification', () => {
     let locatorsId: typeof basePage.idLocators
 
     test.beforeEach('', async ({ page }) => {
-        await page.goto('http://mapleqa.com:8070/js22/?randomParam=12')
+        // await page.goto('https://mapleqa.com/js22/?randomParam=12')
+        await page.goto('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=12')
         basePage = new Base(page)
         locatorsId = basePage.idLocators
     })
