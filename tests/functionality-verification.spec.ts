@@ -331,7 +331,7 @@ test.describe('Functionality Verification', () => {
     })
 
 
-    test('TS888-020: Verify guess field is focused if mouse is used ', async ({ page }) => {
+    test('TS888-020: Verify guess field is focused if mouse is used', async ({ page }) => {
         const guessInput: string = '10'
         await locatorsId.getIdFieldGuess.fill(`${guessInput}`)
         await locatorsId.getIdButtonGuess.click()
