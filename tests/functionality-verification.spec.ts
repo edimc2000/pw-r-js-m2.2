@@ -42,9 +42,10 @@ test.describe('Functionality Verification', () => {
         let guessNumber = '12'
 
         await locatorsId.getIdFieldGuess.fill(guessNumber)
-        await locatorsId.getIdButtonGuess.click()
+        await locatorsId.getIdFieldGuess.press('Enter')
+        // await locatorsId.getIdButtonGuess.click()
 
-        await expect(locatorsId.getIdContainerFirstCard).toContainClass('flipped')
+        await expect.soft(locatorsId.getIdContainerFirstCard).toContainClass('flipped')
         await expect(locatorsId.getIdCardValue).toHaveText(guessNumber)
 
         await expect(locatorsId.getIdTextMessageArea).toHaveText('Congratulations! You guessed the number!')
@@ -327,6 +328,14 @@ test.describe('Functionality Verification', () => {
             await expect(locatorsId.getIdTextMessageArea).toHaveText(`${guessInput[2][index]}`)
         }
 
+    })
+
+
+    test('TS888-020: Verify guess field is focused if mouse is used ', async ({ page }) => {
+        const guessInput: string = '10'
+        await locatorsId.getIdFieldGuess.fill(`${guessInput}`)
+        await locatorsId.getIdButtonGuess.click()
+        await expect(locatorsId.getIdFieldGuess).toBeFocused()
     })
 
 })
