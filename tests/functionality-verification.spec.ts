@@ -27,6 +27,9 @@ test.describe('Functionality Verification', () => {
 
         await expect(locatorsId.getIdTextGuesses).toBeEmpty()
         await expect(locatorsId.getIdTextShowAttempts).toBeEmpty()
+
+        await expect(locatorsId.getIdAttemptsHeader).toHaveText('ATTEMPTS')
+        await expect(locatorsId.getIdTextMiscTitle).toHaveText('guesses')
     })
 
     test('TS888-002: Verify "GUESS" Button Enables/Disables with Input', async ({ page }) => {

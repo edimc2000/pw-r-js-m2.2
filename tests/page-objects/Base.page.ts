@@ -35,6 +35,9 @@ export default class Base {
         getIdCardValue: Locator
 
         getIdContainerFirstCard: Locator
+        getIdMiscTitle: Locator
+        getIdAttemptsHeader: Locator
+
     }
 
     constructor(page: Page) {
@@ -81,7 +84,10 @@ export default class Base {
             getIdCardTitle: this.page.getByTestId("cardTitle"),
             getIdCardValue: this.page.getByTestId('cardValue'),
 
-            getIdContainerFirstCard: this.page.locator('#card')
+            getIdContainerFirstCard: this.page.locator('#card'), 
+
+            getIdMiscTitle: this.page.getByTestId('miscTitle'), 
+            getIdAttemptsHeader: this.page.getByTestId('attemptsTitle')
 
         }
     }
