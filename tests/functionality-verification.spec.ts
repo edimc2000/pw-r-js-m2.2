@@ -290,6 +290,15 @@ test.describe('Functionality Verification', () => {
     })
 
 
+
+/**
+ * ### **TS888-018: Verify Previous Guesses Styling and Order**
+1.  Make guesses in this order: `25`, `10`, `12`.
+    *   Verify the `#guesses` container displays the guesses in the order: `25`, `10`, `12`.
+    *   Verify guesses `25` and `10` have only the class `.boxed`.
+    *   Verify guess `12` has the classes `.boxed.guessed`.
+ */
+
     test('TS888-018: Verify Previous Guesses Styling and Order', async ({ page }) => {
         let guessInput: string[] = ['5', '20', '12']
 
