@@ -10,7 +10,7 @@ test.describe('Functionality Validation', () => {
 
     test.beforeEach(async ({ page }) => {
 
-        staging = false
+        staging = true
         staging === true
             ? await page.goto('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=10') // staging 
             : await page.goto('http://mapleqa.com:8070/js22/?randomParam=10') // live site 
