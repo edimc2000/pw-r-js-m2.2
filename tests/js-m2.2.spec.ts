@@ -10,10 +10,10 @@ test.describe('Functionality Validation', () => {
 
     test.beforeEach(async ({ page }) => {
 
-        staging = true
+        staging = false
         staging === true
             ? await page.goto('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=10') // staging 
-            : await page.goto('http://mapleqa.com:8070/js22/?randomParam=10') // live site 
+            : await page.goto('https://mapleqa.com/js22/?randomParam=10') // live site 
 
         basePage = new Base(page)
         basePageId = basePage.idLocators
@@ -26,7 +26,7 @@ test.describe('Functionality Validation', () => {
         expect(await page.title(), 'Validate the Title of the page ').toContain('m2.2') // with message string on the assertion that reflects on the report as well
         staging === true
             ? expect(page.url(), 'Validate the URL').toContain('http://127.0.0.1:5500/web_dev_basic/HW/eddie-cabangon-js-assignment-M2.2/?randomParam=10')
-            : expect(page.url(), 'Validate the URL').toContain('http://mapleqa.com:8070/js22/?randomParam=10')
+            : expect(page.url(), 'Validate the URL').toContain('https://mapleqa.com/js22/?randomParam=10')
 
         // First Card --------------------------------------
         await expect(basePage.getFrontCardTitle).toHaveAttribute('data-testid', 'frontCardTitle') // miscellaneous test 
@@ -181,7 +181,7 @@ test.describe('Functionality Validation', () => {
         // await page.waitForTimeout(10)
     })
 
-    test('[HW-R-888-002] Validate max attempts - win pressing enter for reset and guessfield', async ({ page }) => {
+    test('[HW-R-888-005] Validate max attempts - win pressing enter for reset and guessfield', async ({ page }) => {
         for (let i = 1; i <= 10; i++) {
             await page.locator('#guessField').fill(`${i}`)
             await page.locator('#guessField').press('Enter')
@@ -196,6 +196,18 @@ test.describe('Functionality Validation', () => {
         await expect(basePageId.getIdTextShowAttempts).toBeEmpty()
         await page.waitForTimeout(10)
     })
+
+
+
+    test('[HW-R-888-006] Validate visibility of the tooltip for the guess field', async ({ page }) => {
+        await expect(basePage.getContainerInstruction).toHaveText('Enter the number here')
+        await expect(basePage.getContainerInstruction).not.toHaveClass('hideMe')
+        await expect(basePage.getContainerInstruction).toBeVisible()
+        await basePage.getFieldGuess.fill('1')
+        await expect(basePage.getContainerInstruction).toHaveClass('hideMe')
+        // await basePage.waitASec(5)
+    })
+
 
 
 

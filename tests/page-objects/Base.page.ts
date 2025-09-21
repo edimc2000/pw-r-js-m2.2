@@ -1,5 +1,5 @@
 import { Locator, Page } from "@playwright/test";
-import path from "path";
+
 
 export default class Base {
     page: Page
@@ -20,6 +20,7 @@ export default class Base {
     getCardGuesses: Locator
     getTextAttemptCounter: Locator
     getCardGuessesIndividual: Locator
+    getContainerInstruction: Locator
 
     idLocators: {
         getIdFieldGuess: Locator
@@ -66,6 +67,11 @@ export default class Base {
         this.getCardGuessesIndividual = this.page.locator('#guesses span')
 
         this.getTextAttemptCounter = this.page.locator('div .rotateAttempt')
+        
+        this.getContainerInstruction = this.page.locator('#floating-container')
+
+        
+
 
         this.idLocators = {
             getIdFieldGuess: this.page.getByTestId('guessField'),
