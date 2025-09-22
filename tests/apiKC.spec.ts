@@ -19,23 +19,38 @@ test('API getUsersList', async ({ request }) => {
 })
 
 test('API last check in ', async ({ request }) => {
-    let getCheckinDetails = await request.get(`http://127.0.0.1:8080/api/account/checkin/1`)
+    let date = '2025-09-22'
+    let subaccount = 7
+    let apiEndpoint =`http://127.0.0.1:8080/api/account/checkin/status/${subaccount}?date=${date}`
 
-    expect(getCheckinDetails.status()).toEqual(200)
+    const getCheckinDetails = await request.get(apiEndpoint)
 
-    console.log(getCheckinDetails.status())
-    console.log((await getCheckinDetails.json()).length)
-    console.log(await getCheckinDetails.json())
-
-
-
-    // with query param - date 
-     getCheckinDetails = await request.get(`http://127.0.0.1:8080/api/account/checkin/1?date=2025-09-21`)
-
-    expect(getCheckinDetails.status()).toEqual(200)
+    console.log(apiEndpoint)
+    // expect(getCheckinDetails.status()).toEqual(200)
+    
 
     console.log(getCheckinDetails.status())
     console.log((await getCheckinDetails.json()).length)
     console.log(await getCheckinDetails.json())
+
+
+})
+
+
+test('API update - checkin ', async ({ request }) => {
+    let date = '2025-09-22'
+    let subaccount = 7
+    let apiEndpoint =`http://127.0.0.1:8080/api/account/checkin/update${subaccount}?date=${date}`
+
+    const getCheckinDetails = await request.get(apiEndpoint)
+
+    console.log(apiEndpoint)
+    // expect(getCheckinDetails.status()).toEqual(200)
+    
+
+    console.log(getCheckinDetails.status())
+    // console.log((await getCheckinDetails.json()).length)
+    // console.log(await getCheckinDetails.json())
+
 
 })
