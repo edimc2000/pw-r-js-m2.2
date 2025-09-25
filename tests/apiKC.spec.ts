@@ -85,7 +85,7 @@ test('API update - checkin ', async ({ request }) => {
 
 test.skip('API update - sms ', async ({ request }) => {
 
-  let apiEndpoint = 'http://mapleqa.com:8030/api/account/checkin/sms'
+  let apiEndpoint = 'https://mapleqa.com/api/account/checkin/sms'
 
   const payload = {
     "subaccount": "12",
@@ -126,7 +126,8 @@ test('API TEST - CHECKIN/UPDATE - Twilio SMS webhook test valid and invalid numb
     }
 
     // Send POST request to your endpoint
-    const response = await request.post('http://mapleqa.com:8030/api/account/checkin/sms', {
+    const response = await request.post('http://mapleqa.com:8030/api/account/checkin/sms', { 
+    // const response = await request.post('https://mapleqa.com/api/account/checkin/sms', { 
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
@@ -168,6 +169,28 @@ test('API TEST - CHECKIN/UPDATE - whatsapp', async ({ request }) => {
       'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
       'content-type': 'application/json',
       'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
+    },
+    data: formData
+  });
+
+  console.log(response.status())
+  const responseText = await response.text();
+  console.log(responseText)
+})
+
+
+
+
+test('API TESTs - CHECKIN/UPDATE - whatsapp', async ({ request }) => {
+
+
+  const formData = buildWhatAppPayload();
+
+  const response = await request.post('https://mapleqa.com/api/account/checkin/whatsapp', {
+    headers: {
+      'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
+      'content-type': 'application/json',
+      
     },
     data: formData
   });
