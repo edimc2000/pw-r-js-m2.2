@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test", 
+    "test": "npx playwright test",
     "test2": "npx playwright test fun"
-
   },
   "keywords": [],
   "author": "",
@@ -13,6 +12,7 @@
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.54.2",
-    "@types/node": "^24.3.0"
+    "@types/node": "^24.3.0",
+    "dotenv": "^17.2.2"
   }
 }
