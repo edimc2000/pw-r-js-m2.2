@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
+
 
 
 function buildPayload(sendingNumber: string, message: string) {
@@ -66,11 +68,11 @@ test('API last check in ', async ({ request }) => {
 test('API update - checkin ', async ({ request }) => {
   test.setTimeout(1200000); // time out at 120 secs
   // update some subacounts 
-  let date = '2025-09-23'
+  let date = '2025-09-26'
   let subaccounts = [11, 12, 13]
   for (let subaccount of subaccounts) {
     console.log(subaccount)
-    let apiEndpoint = `http://mapleqa.com:8030/api/account/checkin/update/${subaccount}?date=${date}`
+    let apiEndpoint = `https://mapleqa.com:8069/api/account/checkin/update/${subaccount}?date=${date}`
     console.log(apiEndpoint)
     const getCheckinDetails = await request.get(apiEndpoint)
     // expect(getCheckinDetails.status()).toEqual(200)
@@ -126,8 +128,8 @@ test('API TEST - CHECKIN/UPDATE - Twilio SMS webhook test valid and invalid numb
     }
 
     // Send POST request to your endpoint
-    const response = await request.post('http://mapleqa.com:8030/api/account/checkin/sms', { 
-    // const response = await request.post('https://mapleqa.com/api/account/checkin/sms', { 
+    const response = await request.post('https://mapleqa.com:8069/api/account/checkin/sms', {
+      // const response = await request.post('https://mapleqa.com/api/account/checkin/sms', { 
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
@@ -143,16 +145,46 @@ test('API TEST - CHECKIN/UPDATE - Twilio SMS webhook test valid and invalid numb
   }
 });
 
+
 function buildWhatAppPayload() {
   return {
-    "messaging_product": "whatsapp",
-    "to": "639993564007",
-    "type": "template",
-    "template": {
-      "name": "hello_world",
-      "language": { "code": "en_US" }
-    }
-   
+    "object": "whatsapp_business_account",
+    "entry": [
+      {
+        "id": "1300079507987806",
+        "changes": [
+          {
+            "value": {
+              "messaging_product": "whatsapp",
+              "metadata": {
+                "display_phone_number": "15551854200",
+                "phone_number_id": "789323877597697"
+              },
+              "contacts": [
+                {
+                  "profile": {
+                    "name": "Kin Connect"
+                  },
+                  "wa_id": "14313733703"
+                }
+              ],
+              "messages": [
+                {
+                  "from": "12049981157",
+                  "id": "wamid.HBgLMTQzMTM3MzM3MDMVAgASGBQyQTVDREIzOTVFMzNBREYzMjMwNQA=",
+                  "timestamp": "1758852960",
+                  "text": {
+                    "body": "(D100) Playwright testing: KIN CONNECT: Dont break the chain. Reply YES to complete your daily check-in."
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "field": "messages"
+          }
+        ]
+      }
+    ]
   }
 
 }
@@ -186,16 +218,96 @@ test('API TESTs - CHECKIN/UPDATE - whatsapp', async ({ request }) => {
 
   const formData = buildWhatAppPayload();
 
-  const response = await request.post('https://mapleqa.com/api/account/checkin/whatsapp', {
+  let response = await request.post('https://mapleqa.com:8069/api/account/checkin/whatsapp', {
     headers: {
       'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
       'content-type': 'application/json',
-      
+
     },
     data: formData
+  });
+
+  console.log(response.status())
+  let responseText = await response.text();
+  console.log(responseText)
+
+  response = await request.get('https://mapleqa.com:8069/api/account/checkin/whatsapp', {
+    headers: {
+      'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
+      'content-type': 'application/json',
+
+    },
+    data: formData
+  });
+
+  console.log(response.status())
+  responseText = await response.text();
+  console.log(responseText)
+
+})
+
+
+
+test('API TESTs - get test live ', async ({ request }) => {
+
+
+  const response = await request.get('https://mapleqa.com:8069/api/test', {
+    headers: {
+      'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
+      'content-type': 'application/json',
+
+    },
   });
 
   console.log(response.status())
   const responseText = await response.text();
   console.log(responseText)
 })
+
+
+function buildWhatAppPayloadSendingLive(receivingWaNumber: string) {
+
+  return {
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": receivingWaNumber,
+    "type": "text",
+    "text": {
+
+      "body": "Playwright testing: KIN CONNECT: Don't break the chain! Reply YES to complete your daily check-in."
+    }
+
+  }
+}
+
+
+test('API TESTs - send a message whatsapp  ', async ({ request }) => {
+
+  let sendToQANumbers = ['14313733703', '12049981157'];
+
+  for (const sendToQANumber of sendToQANumbers) {
+
+    const formData = buildWhatAppPayloadSendingLive(sendToQANumber);
+
+    // let WA_NUMBER = '791348680734564' // this is 639993564007
+    let WA_NUMBER2 = '789323877597697' // this is 1 555 185 4200
+
+    const response = await request.post(`https://graph.facebook.com/v22.0/${WA_NUMBER2}/messages`, {
+      headers: {
+        'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
+        'content-type': 'application/json',
+        'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
+      },
+
+      data: formData
+    });
+
+    console.log(response.status())
+    const responseText = await response.text();
+    console.log(responseText)
+  }
+
+})
+
+
+
