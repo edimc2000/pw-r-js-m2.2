@@ -174,7 +174,7 @@ function buildWhatAppPayload() {
                   "id": "wamid.HBgLMTQzMTM3MzM3MDMVAgASGBQyQTVDREIzOTVFMzNBREYzMjMwNQA=",
                   "timestamp": "1758852960",
                   "text": {
-                    "body": "(D100) Playwright testing: KIN CONNECT: Dont break the chain. Reply YES to complete your daily check-in."
+                    "body": "(D100) PW Daily Check-in Reminder\n\nDon''t break the chain!\nReply YES to complete your daily check-in."
                   },
                   "type": "text"
                 }
@@ -274,7 +274,7 @@ function buildWhatAppPayloadSendingLive(receivingWaNumber: string) {
     "type": "text",
     "text": {
 
-      "body": "Playwright testing: KIN CONNECT: Don't break the chain! Reply YES to complete your daily check-in."
+      "body": `PW Daily Check-in Reminder\n\n\n*Hello*,\nDon't break the chain! \n\nReply YES to complete your daily check-in.`
     }
 
   }
@@ -283,13 +283,15 @@ function buildWhatAppPayloadSendingLive(receivingWaNumber: string) {
 
 test('API TESTs - send a message whatsapp  ', async ({ request }) => {
 
-  let sendToQANumbers = ['14313733703', '12049981157'];
+  //let sendToQANumbers = ['12049981157'];
+   let sendToQANumbers = ['12049981157', '14313733703', '639173029974'];
+  // let sendToQANumbers = [ '639173029974']; //camille
 
   for (const sendToQANumber of sendToQANumbers) {
 
     const formData = buildWhatAppPayloadSendingLive(sendToQANumber);
 
-    // let WA_NUMBER = '791348680734564' // this is 639993564007
+    let WA_NUMBER = '791348680734564' // this is 639993564007
     let WA_NUMBER2 = '789323877597697' // this is 1 555 185 4200
 
     const response = await request.post(`https://graph.facebook.com/v22.0/${WA_NUMBER2}/messages`, {
@@ -307,6 +309,30 @@ test('API TESTs - send a message whatsapp  ', async ({ request }) => {
     console.log(responseText)
   }
 
+})
+
+
+
+test('API WHATSAPP VERIT  -  ', async ({ request }) => {
+
+
+
+  let WA_NUMBER = '791348680734564' // this is 639993564007
+  let WA_NUMBER2 = '789323877597697' // this is 1 555 185 4200
+  const response = await request.post(`https://graph.facebook.com/v23.0/1300079507987806/phone_numbers?access_token=${process.env.W_ACCESS_TOKEN}`,
+    {
+      headers: {
+        // 'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
+        'content-type': 'application/json',
+        // 'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
+      },
+
+
+    });
+
+  console.log(response.status())
+  const responseText = await response.text();
+  console.log(responseText)
 })
 
 
