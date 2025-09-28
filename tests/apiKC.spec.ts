@@ -68,7 +68,7 @@ test('API last check in ', async ({ request }) => {
 test('API update - checkin ', async ({ request }) => {
   test.setTimeout(1200000); // time out at 120 secs
   // update some subacounts 
-  let date = '2025-09-26'
+  let date = '2025-09-27'
   let subaccounts = [11, 12, 13]
   for (let subaccount of subaccounts) {
     console.log(subaccount)
@@ -81,8 +81,6 @@ test('API update - checkin ', async ({ request }) => {
 
 
 })
-
-
 
 
 test.skip('API update - sms ', async ({ request }) => {
@@ -333,6 +331,32 @@ test('API WHATSAPP VERIT  -  ', async ({ request }) => {
   console.log(response.status())
   const responseText = await response.text();
   console.log(responseText)
+})
+
+
+
+
+
+test('SMSMOBILESMS - Send test  ', async ({ request }) => {
+
+
+
+  let apiKey = process.env.SMSMOBILEAPI_KEY
+  console.log(apiKey)
+  // const response = await request.post(`https://graph.facebook.com/v23.0/1300079507987806/phone_numbers?access_token=${process.env.W_ACCESS_TOKEN}`,
+  //   {
+  //     headers: {
+  //       // 'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
+  //       'content-type': 'application/json',
+  //       // 'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
+  //     },
+
+
+  //   });
+
+  // console.log(response.status())
+  // const responseText = await response.text();
+  // console.log(responseText)
 })
 
 
