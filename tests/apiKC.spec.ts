@@ -3,6 +3,14 @@ import { defineConfig, devices } from '@playwright/test';
 
 
 
+
+const accountSid = process.env.TWILIO_ACCOUNT_SID
+const authToken = process.env.TWILIO_AUTH_TOKEN
+const twilioPhoneNumber = '12048004222'
+const base64Credentials = btoa(`${accountSid}:${authToken}`);
+
+
+
 function buildPayload(sendingNumber: string, message: string) {
   return {
     ToCountry: 'CA',
@@ -26,6 +34,37 @@ function buildPayload(sendingNumber: string, message: string) {
     ApiVersion: '2010-04-10'
   };
 }
+
+test('TWILIO SEND MESSAGES', async ({ request }) => {
+
+
+  const formData = new URLSearchParams();
+   formData.append('To', '14319971987');// tere
+  // formData.append('To', '12049981157');// eddie
+ // formData.append('To', '12049981480');// eddie
+
+  formData.append('From', twilioPhoneNumber);
+  formData.append('Body', `Daily Check-in Reminder\n\nDon''t break the chain!\nReply YES to complete your daily check-in.`);
+
+  const response = await fetch(
+    `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${base64Credentials}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formData
+    }
+  );
+
+  const data = await response.json();
+  console.log(data)
+
+
+
+})
+
 
 
 test('API getUsersList', async ({ request }) => {
@@ -107,7 +146,7 @@ test.skip('API update - sms ', async ({ request }) => {
 
 test('API TEST - CHECKIN/UPDATE - Twilio SMS webhook test valid and invalid number', async ({ request }) => {
   // Twilio-like form data payload
-  let message = 'Test: Playwright ' + Math.floor(Math.random() * (1000 - 1)); // Your test message
+  let message = `PW Daily Check-in Reminder\n\nDon''t break the chain!\nReply YES to complete your daily check-in. ${Math.floor(Math.random() * (1000 - 1))} `
   let sendingNumber = ['+12049981157', '+12049981480', '+12049981158']; // Your test phone number
 
   // Expected XML response
@@ -282,7 +321,7 @@ function buildWhatAppPayloadSendingLive(receivingWaNumber: string) {
 test('API TESTs - send a message whatsapp  ', async ({ request }) => {
 
   //let sendToQANumbers = ['12049981157'];
-   let sendToQANumbers = ['12049981157', '14313733703', '639173029974'];
+  let sendToQANumbers = ['12049981157', '14313733703', '639173029974'];
   // let sendToQANumbers = [ '639173029974']; //camille
 
   for (const sendToQANumber of sendToQANumbers) {
@@ -342,22 +381,92 @@ test('SMSMOBILESMS - Send test  ', async ({ request }) => {
 
 
   let apiKey = process.env.SMSMOBILEAPI_KEY
+  let sendNumber = '+14313733703'
+  let message = 'random X' + Math.floor(Math.random() * (1000 - 1 + 1)) + 1
   console.log(apiKey)
-  // const response = await request.post(`https://graph.facebook.com/v23.0/1300079507987806/phone_numbers?access_token=${process.env.W_ACCESS_TOKEN}`,
-  //   {
-  //     headers: {
-  //       // 'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
-  //       'content-type': 'application/json',
-  //       // 'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
-  //     },
+  const response = await request.post(` https://api.smsmobileapi.com/sendsms?apikey=${apiKey}&recipients=${sendNumber}&message=${message}`,
+    {
+      headers: {
+        // 'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
+        'content-type': 'application/json',
+        // 'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
+      },
 
 
-  //   });
+    });
 
-  // console.log(response.status())
-  // const responseText = await response.text();
-  // console.log(responseText)
+  console.log("STATUS: => ", response.status())
+  const responseText = await response.text();
+  console.log("RESPONSE TEXT: => ", responseText)
 })
 
+
+
+
+test('SMSMOBILESMS - api test  ', async ({ request }) => {
+
+  const response = await request.post('https://mapleqa.com:8069/api/smsmobileapi/g', {
+    headers: {
+
+    },
+    data: { "lih": "456" }
+  });
+
+  console.log(response.status())
+  const responseText = await response.text();
+  console.log(responseText)
+})
+
+
+
+
+
+test('SMSMOBILESMS - activate receive whatsapp   ', async ({ request }) => {
+  let apiKey = process.env.SMSMOBILEAPI_KEY
+  const response = await request.get(`https://api.smsmobileapi.com/getwa/active/?apikey=${apiKey}&statut=1`, {
+    headers: {
+      'content-type': 'application/json',
+    },
+    data: { "lih": "456" }
+  });
+
+  console.log(response.status())
+  const responseText = await response.text();
+  console.log(responseText)
+})
+
+
+
+
+test('SMSMOBILESMS - sync whatsapp   ', async ({ request }) => {
+  let apiKey = process.env.SMSMOBILEAPI_KEY
+  const response = await request.get(`https://api.smsmobileapi.com/getwa/synchronisation/?apikey=${apiKey}`, {
+    headers: {
+      'content-type': 'application/json',
+    },
+    data: { "lih": "456" }
+  });
+
+  console.log(response.status())
+  const responseText = await response.text();
+  console.log(responseText)
+})
+
+
+
+test('SMSMOBILESMS - retrieve whatsapp   ', async ({ request }) => {
+  let apiKey = process.env.SMSMOBILEAPI_KEY
+  const response = await request.get(`https://api.smsmobileapi.com/getwa/?apikey=${apiKey}`,
+    {
+      headers: {
+        'content-type': 'application/json',
+      },
+      data: { "lih": "456" }
+    });
+
+  console.log(response.status())
+  const responseText = await response.text();
+  console.log(responseText)
+})
 
 
