@@ -33,7 +33,7 @@ export default defineConfig({
     trace: 'on',
     headless: false,
 
-    launchOptions: { args: ["--window-position=3400,0"]}
+    launchOptions: { args: ["--window-position=3400,0"] }
   },
 
   /* Configure projects for major browsers */

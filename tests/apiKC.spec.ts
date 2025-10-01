@@ -7,7 +7,7 @@ import { defineConfig, devices } from '@playwright/test';
 const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const twilioPhoneNumber = '12048004222'
-const base64Credentials = btoa(`${accountSid}:${authToken}`);
+const base64Credentials = btoa(`${accountSid}:${authToken}`)
 
 
 
@@ -35,19 +35,15 @@ function buildPayload(sendingNumber: string, message: string) {
   };
 }
 
-test('TWILIO SEND MESSAGES', async ({ request }) => {
-
+async function sendSMSTwilio(sendTo: string, sendFrom: string) {
 
   const formData = new URLSearchParams();
-   formData.append('To', '14319971987');// tere
-  // formData.append('To', '12049981157');// eddie
- // formData.append('To', '12049981480');// eddie
-
-  formData.append('From', twilioPhoneNumber);
+  formData.append('To', sendTo);// tere
+  formData.append('From', sendFrom);
   formData.append('Body', `Daily Check-in Reminder\n\nDon''t break the chain!\nReply YES to complete your daily check-in.`);
 
-  const response = await fetch(
-    `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+  console.log(formData)
+  const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
     {
       method: 'POST',
       headers: {
@@ -57,12 +53,18 @@ test('TWILIO SEND MESSAGES', async ({ request }) => {
       body: formData
     }
   );
-
+  console.log('*****')
   const data = await response.json();
-  console.log(data)
+  console.log(await data)
+
+}
 
 
-
+test('TWILIO SEND MESSAGES', async ({ request }) => {
+  const sendToPhoneNumbers = ['14319971987', '12049981480', '12049981157']
+  for (let index = 0; index < sendToPhoneNumbers.length; index++) {
+   await sendSMSTwilio(sendToPhoneNumbers[index], twilioPhoneNumber)
+  }
 })
 
 
@@ -320,7 +322,7 @@ function buildWhatAppPayloadSendingLive(receivingWaNumber: string) {
 
 test('API TESTs - send a message whatsapp  ', async ({ request }) => {
 
-  //let sendToQANumbers = ['12049981157'];
+  // let sendToQANumbers = ['14313733703'];
   let sendToQANumbers = ['12049981157', '14313733703', '639173029974'];
   // let sendToQANumbers = [ '639173029974']; //camille
 
