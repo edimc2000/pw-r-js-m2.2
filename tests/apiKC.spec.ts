@@ -2,12 +2,15 @@ import { test, expect } from '@playwright/test'
 import { defineConfig, devices } from '@playwright/test';
 
 
+import twilio from 'twilio';
 
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const twilioPhoneNumber = '12048004222'
 const base64Credentials = btoa(`${accountSid}:${authToken}`)
+
+const twMessageID = process.env.TW_WA_MESSAGING_SID
 
 
 
@@ -35,12 +38,14 @@ function buildPayload(sendingNumber: string, message: string) {
   };
 }
 
-async function sendSMSTwilio(sendTo: string, sendFrom: string) {
+async function sendSMSTwilio(sendTo: string, sendFrom: string, messagingServiceID?: String) {
 
   const formData = new URLSearchParams();
-  formData.append('To', sendTo);// tere
-  formData.append('From', sendFrom);
-  formData.append('Body', `Daily Check-in Reminder\n\nDon''t break the chain!\nReply YES to complete your daily check-in.`);
+
+  formData.append('To', sendTo)
+
+  formData.append('From', sendFrom)
+  formData.append('Body', `Daily Check-in Reminder\n\nDon''t break the chain!\nReply YES to complete your daily check-in.`)
 
   console.log(formData)
   const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
@@ -60,12 +65,69 @@ async function sendSMSTwilio(sendTo: string, sendFrom: string) {
 }
 
 
-test('TWILIO SEND MESSAGES', async ({ request }) => {
-  const sendToPhoneNumbers = ['14319971987', '12049981480', '12049981157']
+test('TWILIO SEND MESSAGES SMS', async ({ request }) => {
+  // const sendToPhoneNumbers = ['14319971987', '12049981480', '12049981157']
+  const sendToPhoneNumbers = ['12049981157']
+
   for (let index = 0; index < sendToPhoneNumbers.length; index++) {
-   await sendSMSTwilio(sendToPhoneNumbers[index], twilioPhoneNumber)
+    await sendSMSTwilio(sendToPhoneNumbers[index], twilioPhoneNumber)
   }
 })
+
+
+test('API WHATSAPP TW send  -  ', async ({ request }) => {
+
+
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const client = twilio(accountSid, authToken);
+
+  async function sendWhatsAppMessage(
+    to: string,
+    from: string,
+    body: string
+  ) {
+    try {
+      const message = await client.messages.create({
+        body: body,
+        from: `whatsapp:${from}`, // Your Twilio WhatsApp number
+        to: `whatsapp:${to}`      // Recipient's WhatsApp number
+      });
+
+      console.log('Message SID:', message.sid);
+      return message;
+    } catch (error) {
+      console.error('Error sending message:', error);
+      throw error;
+    }
+  }
+
+  // Usage
+  //  console.log(await  sendWhatsAppMessage('+12049981157', '+15558708778', 'Hello from WhatsApp!'))
+// console.log(await sendWhatsAppMessage('+14313733703', '+15558708778', '888Hello from WhatsApp!'))
+
+  let ContentVariables = { "1": "Joe", "2": "O12235234" }
+  
+
+  async function createMessage() {
+    const message = await client.messages.create({
+      contentSid: "HX848d0186a4041c138572b254fdce094a",
+      contentVariables: JSON.stringify({ 1: "Enzo" }),
+      from: "whatsapp:+15558708778",
+      messagingServiceSid: process.env.TW_WA_MESSAGING_SID,
+      to: "whatsapp:+12049981157",
+    });
+
+    console.log( message.body)
+    return  message
+  }
+
+  console.log(await createMessage())
+
+})
+
+
+
 
 
 
@@ -322,8 +384,8 @@ function buildWhatAppPayloadSendingLive(receivingWaNumber: string) {
 
 test('API TESTs - send a message whatsapp  ', async ({ request }) => {
 
-  // let sendToQANumbers = ['14313733703'];
-  let sendToQANumbers = ['12049981157', '14313733703', '639173029974'];
+  let sendToQANumbers = ['14313733703'];
+  // let sendToQANumbers = ['12049981157', '14313733703', '639173029974'];
   // let sendToQANumbers = [ '639173029974']; //camille
 
   for (const sendToQANumber of sendToQANumbers) {
@@ -332,12 +394,12 @@ test('API TESTs - send a message whatsapp  ', async ({ request }) => {
 
     let WA_NUMBER = '791348680734564' // this is 639993564007
     let WA_NUMBER2 = '789323877597697' // this is 1 555 185 4200
+    let WA_TW = '804565875449211' // this is 1 555 185 4200
 
-    const response = await request.post(`https://graph.facebook.com/v22.0/${WA_NUMBER2}/messages`, {
+    const response = await request.post(`https://graph.facebook.com/v22.0/${WA_NUMBER}/messages`, {
       headers: {
         'Authorization': `Bearer ${process.env.W_ACCESS_TOKEN}`,
         'content-type': 'application/json',
-        'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
       },
 
       data: formData
@@ -354,8 +416,6 @@ test('API TESTs - send a message whatsapp  ', async ({ request }) => {
 
 test('API WHATSAPP VERIT  -  ', async ({ request }) => {
 
-
-
   let WA_NUMBER = '791348680734564' // this is 639993564007
   let WA_NUMBER2 = '789323877597697' // this is 1 555 185 4200
   const response = await request.post(`https://graph.facebook.com/v23.0/1300079507987806/phone_numbers?access_token=${process.env.W_ACCESS_TOKEN}`,
@@ -365,14 +425,15 @@ test('API WHATSAPP VERIT  -  ', async ({ request }) => {
         'content-type': 'application/json',
         // 'x-twilio-signature': 'oQ/MpmBxp7nNSyCQ0hjprQbxJG4=',
       },
-
-
     });
 
   console.log(response.status())
   const responseText = await response.text();
   console.log(responseText)
 })
+
+
+
 
 
 
