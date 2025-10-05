@@ -339,9 +339,7 @@ test.describe('Functionality Verification', () => {
             await expect(basePage.getTextAttemptCounter).toHaveText(`${guessInput[1][index]}`)
             await expect(locatorsId.getIdTextMessageArea).toHaveText(`${guessInput[2][index]}`)
         }
-
     })
-
 
     test('TS888-020: Verify guess field is focused if mouse is used', async ({ page }) => {
         const guessInput: string = '10'

@@ -31,9 +31,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
-    headless: false,
+    headless: process.env.CI ? true : false,
 
-    launchOptions: { args: ["--window-position=3400,0"] }
+    launchOptions: { args: ["--window-position=1700,0"] }
   },
 
   /* Configure projects for major browsers */
