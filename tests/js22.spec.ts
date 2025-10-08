@@ -30,7 +30,7 @@ test.describe('Number Guessing Game Validation', () => {
         await expect(numberGuessingPage.getContainerGuesses).toHaveText('12');
         await expect(numberGuessingPage.getContainerAttempts).toHaveText('1 / 10');
         // await page.waitForTimeout(10000)
-        await numberGuessingPage.waitASec(10)
+        await numberGuessingPage.waitASec(100)
 
     })
 
