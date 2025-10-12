@@ -6,3 +6,6 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .env
+tests/m.spec.ts
+tests/s.spec.ts
+tests/*.png
