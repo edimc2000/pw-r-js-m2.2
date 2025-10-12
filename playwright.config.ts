@@ -13,11 +13,7 @@ import 'dotenv/config'
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-
   testDir: './tests',
-
-
-
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -34,23 +30,44 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://localhost:3000',
-    
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
     headless: process.env.CI ? true : false,
 
 
-    launchOptions: { args: ["--window-position=1700,0"] }
+
   },
 
   /* Configure projects for major browsers */
-  // projects: [
+  projects: [
+    {
+      name: 'ipad pro with chrome',
+      testDir: './tests/ipad',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1024, height: 1336 },
+        launchOptions: { args: ["--window-position=0,0"] }
+      },
+
+    },
+
     // {
-    //   name: 'chromium',
-    //   use: { ...devices['Desktop Chrome'], 
-    //     viewport: { width: 180, height: 200 },
-    //    },
-      
+    //   name: 'ipad pro with safari',
+    //   use: {
+    //     ...devices['Desktop Safari'],
+    //     viewport: { width: 1024, height: 1336 },
+    //   },
+
+    // },
+
+    // {
+    //   name: 'Samsung S23 Chrome',
+    //   use: {
+    //     ...devices['Desktop Chrome'],
+    //     viewport: { width: 411, height: 749 },
+    //   },
+
     // },
 
     // {
@@ -82,7 +99,7 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  // ],
+  ],
 
   /* Run your local dev server before starting the tests */
   // webServer: {
